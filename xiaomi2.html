@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Xiaomi SU7 Ultra介绍</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* 初始背景 */
+      .bg-container:first-child {
+        background-image: url("su7 yellow.jpg");
+        opacity: 1;
+        z-index: 1;
+      }
+
+      #tip-popup {
+        position: fixed;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ff6900;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 20px;
+        font-size: 16px;
+        z-index: 1000;
+        opacity: 1;
+        animation: popIn 0.5s ease-out;
+        pointer-events: none;
+      }
+
+      /* 弹出动画 */
+      @keyframes popIn {
+        0% {
+          transform: translate(-50%, -50%) scale(0.5);
+          opacity: 0;
+        }
+        60% {
+          transform: translate(-50%, -50%) scale(1.2);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* 收起动画 */
+      #tip-popup.hide {
+        animation: shrinkAndMove 0.8s ease-in forwards;
+      }
+
+      #tip-popup.hide {
+        animation: none;
+      }
+
+      /* 新增按钮匹配样式 */
+      #tip-popup {
+        transition: border-radius 0.6s ease; /* 新增圆角过渡 */
+      }
+
+      /* 添加这个类用于隐藏文字 */
+      .tip-text {
+        display: inline-block;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+      }
+
+      /* 在动画期间隐藏文字 */
+      #tip-popup.animating .tip-text {
+        opacity: 0;
+      }
+
+      /* 背景容器 */
+      .bg-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        transition: opacity 1s ease-in-out;
+        z-index: 0;
+        background-image: url("su7 yellow.jpg"); /* 初始背景设为黄色 */
+      }
+
+      /* 其他背景层 */
+      .bg-container:nth-child(2) {
+        background-image: url("su7 white.jpg");
+      }
+      .bg-container:nth-child(3) {
+        background-image: url("su7 grey.jpg");
+      }
+      .bg-container:nth-child(4) {
+        background-image: url("su7 green.jpg");
+      }
+      .bg-container:nth-child(5) {
+        background-image: url("su7 black.jpg");
+      }
+
+      /* 颜色按钮容器 */
+      .color-buttons {
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        z-index: 3;
+      }
+
+      .color-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+
+      .color-btn::after {
+        content: "";
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      .color-btn.active {
+        transform: scale(1.2);
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .color-btn.active::after {
+        opacity: 1;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+      }
+
+      /* 参数说明区域 */
+      .specs {
+        position: absolute;
+        left: 80px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        z-index: 2;
+      }
+
+      .spec-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .copyright {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        font-family: Arial, sans-serif;
+        z-index: 3;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 4px 8px;
+        border-radius: 3px;
+        backdrop-filter: blur(2px);
+      }
+
+      .data {
+        color: #ff6900;
+        font-size: 24px;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      }
+
+      .label {
+        color: #9d9d9d;
+        font-size: 16px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 参数切换点 */
+      .spec-switch {
+        position: absolute;
+        bottom: 200px;
+        left: 150px;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        z-index: 3;
+      }
+
+      .spec-switch button {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.6);
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .spec-switch button.active {
+        background-color: #ff6900;
+        width: 15px;
+        height: 15px;
+      }
+
+      /* 图片展示区域 */
+      .spec-images {
+        visibility: hidden; /* 初始时隐藏图片 */
+        opacity: 0;
+        position: absolute; /* 确保图片定位在页面上 */
+        top: 50%; /* 让图片居中显示 */
+        left: 10%;
+        transform: translate(-50%, -50%); /* 居中对齐 */
+        z-index: 2; /* 确保图片在背景之上 */
+        transition: opacity 0.5s ease; /* 添加过渡效果 */
+      }
+
+      /* 激活时显示图片 */
+      .spec-images.active {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      /* 为图片设置明确的宽高 */
+      .spec-images img {
+        width: 200px; /* 设置合适的宽度 */
+        height: auto; /* 自动调整高度 */
+      }
+
+      /* 跳转箭头 */
+      .arrow-link {
+        position: fixed;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 40px;
+        text-decoration: none;
+        color: #fff;
+        background: rgba(0, 0, 0, 0);
+        padding: 15px 25px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(3px);
+      }
+
+      .arrow-link:hover {
+        background: rgba(0, 0, 0, 0.8);
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      /* 返回主页按钮 */
+      .back-btn {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        font-size: 0; /* 初始隐藏文字 */
+        padding: 10px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        color: transparent;
+        background-color: #ff6900;
+        outline: none;
+        border: none;
+        box-shadow: 0 0 10px rgba(255, 105, 0, 0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        overflow: hidden;
+      }
+
+      /* 悬停后展开按钮 */
+      .back-btn:hover {
+        width: auto;
+        padding: 25px 60px;
+        font-size: 16px;
+        color: #ff6900;
+        background: transparent;
+        border-radius: 30px;
+        outline: 1px solid #ff6900;
+        text-shadow: none;
+        box-shadow: inset 0 0 20px rgba(255, 105, 0, 0.3),
+          0 0 20px rgba(255, 105, 0, 0.2);
+      }
+
+      /* 文字在展开时显示 */
+      .back-btn:hover::after {
+        content: "回到首页";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+      }
+
+      /* 说明文字样式 */
+      .spec-description {
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 15px;
+        color: #bebebe;
+        font-weight: regular;
+        text-align: center;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        z-index: 2;
+        opacity: 0; /* 初始为不可见 */
+        transition: opacity 0.5s ease;
+      }
+
+      /* 激活时显示说明文字 */
+      .spec-description.active {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <!--tip-->
+    <div id="tip-popup"><span class="tip-text">点击顶部圆圈可返回哦</span></div>
+
+    <!-- 背景容器 -->
+    <div class="bg-container"></div>
+    <div class="bg-container"></div>
+    <div class="bg-container"></div>
+    <div class="bg-container"></div>
+    <div class="bg-container"></div>
+
+    <!-- 颜色切换按钮 -->
+    <div class="color-buttons">
+      <button
+        class="color-btn active"
+        style="background: #fcc010"
+        data-index="0"
+      ></button>
+      <button
+        class="color-btn"
+        style="background: #f6f6f7"
+        data-index="1"
+      ></button>
+      <button
+        class="color-btn"
+        style="background: #aeacae"
+        data-index="2"
+      ></button>
+      <button
+        class="color-btn"
+        style="background: #3f9091"
+        data-index="3"
+      ></button>
+      <button
+        class="color-btn"
+        style="background: #222b39"
+        data-index="4"
+      ></button>
+    </div>
+
+    <!-- 参数说明 -->
+    <div class="specs">
+      <div class="spec-group">
+        <span class="data">93.7kwh</span>
+        <span class="label">电池容量</span>
+      </div>
+      <div class="spec-group">
+        <span class="data">1.98s</span>
+        <span class="label">零百加速</span>
+      </div>
+      <div class="spec-group">
+        <span class="data">Xiaomi HAD</span>
+        <span class="label">智能驾驶操作系统</span>
+      </div>
+      <div class="spec-group">
+        <span class="data">1548hp</span>
+        <span class="label">三电机系统综合马力</span>
+      </div>
+    </div>
+
+    <!-- 参数切换点 -->
+    <div class="spec-switch">
+      <button class="switch-point active" data-index="0"></button>
+      <button class="switch-point" data-index="1"></button>
+      <button class="switch-point" data-index="2"></button>
+    </div>
+
+    <!-- 图片展示区域 -->
+    <div class="spec-images">
+      <img src="speed.png" alt="Image 1" />
+    </div>
+    <div class="spec-images">
+      <img src="cd.png" alt="Image 2" />
+    </div>
+
+    <!-- 说明文字 -->
+    <div class="spec-description"></div>
+    <div class="spec-description"></div>
+
+    <!-- 标注 -->
+    <div class="copyright">图片来自小米官网</div>
+
+    <!-- 跳转箭头 -->
+    <a class="arrow-link" href="xiaomi3.html" target="_blank">
+      <img
+        src="arrow.png"
+        alt="Arrow"
+        style="width: 76.66px; height: 67.25px"
+      />
+    </a>
+
+    <!-- back to home -->
+    <button
+      class="back-btn"
+      onclick="window.location.href='index.html'"
+    ></button>
+
+    <script>
+      window.addEventListener("load", () => {
+        const tip = document.getElementById("tip-popup");
+        const tipText = tip.querySelector(".tip-text");
+        const backBtn = document.querySelector(".back-btn");
+
+        setTimeout(() => {
+          const btnRect = backBtn.getBoundingClientRect();
+          const tipRect = tip.getBoundingClientRect();
+
+          // 按钮中心点
+          const targetX = btnRect.left + btnRect.width / 2;
+          const targetY = btnRect.top + btnRect.height / 2;
+
+          // 当前 tip 中心点
+          const startX = window.innerWidth / 2;
+          const startY = window.innerHeight * 0.4;
+
+          // 相对偏移量
+          const deltaX = targetX - startX;
+          const deltaY = targetY - startY;
+
+          tip.classList.add("animating");
+
+          tip.animate(
+            [
+              {
+                transform: `translate(-50%, -50%) scale(1)`,
+                borderRadius: "20px",
+                width: `${tipRect.width}px`,
+                height: `${tipRect.height}px`,
+                opacity: 1,
+              },
+              {
+                transform: `translate(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px)) scale(0.5)`,
+                borderRadius: "50%",
+                width: `${btnRect.width}px`,
+                height: `${btnRect.height}px`,
+                opacity: 0.8,
+                offset: 0.4,
+              },
+              {
+                transform: `translate(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px)) scale(0)`,
+                borderRadius: "50%",
+                width: `${btnRect.width}px`,
+                height: `${btnRect.height}px`,
+                opacity: 0,
+              },
+            ],
+            {
+              duration: 900,
+              easing: "ease-in-out",
+              fill: "forwards",
+            }
+          ).onfinish = () => tip.remove();
+        }, 2000);
+      });
+
+      // 预加载所有图片
+      const preloadImages = () => {
+        const images = [
+          "su7 yellow.jpg",
+          "su7 white.jpg",
+          "su7 grey.jpg",
+          "su7 green.jpg",
+          "su7 black.jpg",
+        ];
+        images.forEach((src) => {
+          new Image().src = src;
+        });
+      };
+      preloadImages();
+
+      const buttons = document.querySelectorAll(".color-btn");
+      const bgContainers = document.querySelectorAll(".bg-container");
+      let currentIndex = 0;
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = parseInt(button.dataset.index);
+
+          if (index === currentIndex) return;
+
+          // 移除所有激活状态
+          buttons.forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+
+          // 背景切换动画
+          bgContainers[currentIndex].style.opacity = 0;
+          bgContainers[index].style.opacity = 1;
+          bgContainers[index].style.zIndex = 1;
+          bgContainers[currentIndex].style.zIndex = 0;
+
+          currentIndex = index;
+        });
+      });
+
+      // 参数说明区域切换
+      const switchButtons = document.querySelectorAll(".switch-point");
+      const specImages = document.querySelectorAll(".spec-images");
+      const specs = document.querySelector(".specs");
+
+      switchButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = parseInt(button.dataset.index);
+
+          // 切换展示的内容
+          switchButtons.forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+
+          // 显示或隐藏图片
+          if (index === 0) {
+            specs.style.display = "flex"; // 显示参数说明
+            specImages.forEach((img) => {
+              img.classList.remove("active"); // 隐藏所有图片
+            });
+          } else if (index === 1) {
+            specs.style.display = "none"; // 隐藏参数说明
+            specImages[0].classList.add("active"); // 显示第一张图片（speed.png）
+            specImages[1].classList.remove("active"); // 隐藏第二张图片（cd.png）
+          } else {
+            specs.style.display = "none"; // 隐藏参数说明
+            specImages[1].classList.add("active"); // 显示第二张图片（cd.png）
+            specImages[0].classList.remove("active"); // 隐藏第一张图片（speed.png）
+          }
+        });
+      });
+
+      // 新增说明文字
+      const specDescriptions = {
+        1: "这一时速表现突出Xiaomi在电动汽车领域的创新能力，表明其不仅仅追求续航和智能技术，也能提供极致的驾驶体验。对于喜欢性能和速度的用户，这样的突破有助于吸引更多对高端电动车有需求的消费者，提升品牌的市场竞争力。这一时速提升给Xiaomi SU7 Ultra带来了更强的市场吸引力和品牌影响力，同时也满足了对速度和技术有高要求的用户群体。",
+        2: "搭载900V高压平台，实现15分钟10%-80%充电（竞品需20分钟以上），充电速度达到特斯拉的3倍、保时捷的2倍，解决了电动车用户的核心痛点——补能焦虑。",
+      };
+
+      switchButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = parseInt(button.dataset.index);
+
+          // 切换展示的内容
+          switchButtons.forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+
+          // 显示或隐藏图片和说明文字
+          if (index === 0) {
+            specs.style.display = "flex"; // 显示参数说明
+            specImages.forEach((img) => {
+              img.classList.remove("active"); // 隐藏所有图片
+            });
+            document
+              .querySelector(".spec-description")
+              .classList.remove("active");
+          } else if (index === 1) {
+            specs.style.display = "none"; // 隐藏参数说明
+            specImages[0].classList.add("active"); // 显示第一张图片（speed.png）
+            specImages[1].classList.remove("active"); // 隐藏第二张图片（cd.png）
+            document.querySelector(".spec-description").textContent =
+              specDescriptions[1];
+            document.querySelector(".spec-description").classList.add("active");
+          } else {
+            specs.style.display = "none"; // 隐藏参数说明
+            specImages[1].classList.add("active"); // 显示第二张图片（cd.png）
+            specImages[0].classList.remove("active"); // 隐藏第一张图片（speed.png）
+            document.querySelector(".spec-description").textContent =
+              specDescriptions[2];
+            document.querySelector(".spec-description").classList.add("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
