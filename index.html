@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>首页</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: #000;
+        font-family: Arial, sans-serif;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .image-container {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
+      .start-btn {
+        position: absolute;
+        top: 80%; /* 调整垂直位置 */
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+
+        /* 缩小按钮尺寸 */
+        font-size: 36px; /* 调小字号 */
+        padding: 20px 60px; /* 调小内边距 */
+        border-radius: 40px; /* 调小圆角 */
+
+        font-weight: 700;
+        color: #ff6900;
+        text-shadow: none;
+        border: 0 solid;
+        background: transparent;
+        outline: 1px solid #ff6900;
+        transition: all 1250ms cubic-bezier(0.19, 1, 0.22, 1);
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .start-btn:hover {
+        border: 1px solid;
+        box-shadow: inset 0 0 20px rgba(255, 105, 0, 0.3),
+          0 0 20px rgba(255, 105, 0, 0.2);
+        outline-color: transparent;
+        outline-offset: 15px;
+        text-shadow: 1px 1px 2px #00e5ff;
+      }
+
+      @media (max-width: 768px) {
+        .start-btn {
+          font-size: 24px; /* 移动端更小字号 */
+          padding: 10px 50px; /* 移动端更小尺寸 */
+          border-radius: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="image-container">
+      <img src="home 11.png" alt="su7 ultra" />
+    </div>
+    <button class="start-btn" onclick="window.location.href='xiaomi2.html'">
+      Start
+    </button>
+  </body>
+</html>
